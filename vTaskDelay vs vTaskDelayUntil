@@ -1,0 +1,25 @@
+void DelayTask(void *argument)
+{
+    for (;;)
+    {
+        HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_1);  // Toggle LED1
+        vTaskDelay(pdMS_TO_TICKS(1000));        // Wait 1000 ms
+    }
+}
+
+.
+.
+
+.
+void DelayUntilTask(void *argument)
+{
+    TickType_t xLastWakeTime = xTaskGetTickCount();  // Initialize to current tick
+
+    for (;;)
+    {
+        HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_2);  // Toggle LED2
+        vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(1000));  // Wait until next 1000 ms boundary
+    }
+}
+
+

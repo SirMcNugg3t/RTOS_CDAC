@@ -1,0 +1,35 @@
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+
+        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+        xSemaphoreGiveFromISR(myBinarySem01Handle, &xHigherPriorityTaskWoken);
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+
+}
+
+.
+.
+.
+
+void LED_Task(void const * argument)
+{
+  /* USER CODE BEGIN LED_Task */
+  /* Infinite loop */
+for(;;)
+{
+	if(xSemaphoreTake(myBinarySem01Handle,portMAX_DELAY) == pdTRUE){
+		HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_1);
+		osDelay(1000);HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_1);
+		osDelay(1000);HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_1);
+    }
+    osDelay(1);
+}
+ /* USER CODE END LED_Task */
+}
+
+.
+.
+.
+
+
+
