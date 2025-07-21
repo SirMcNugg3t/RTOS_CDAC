@@ -1,0 +1,41 @@
+#define SHTC3_ADDRESS_WRITE (0x70 << 1)
+#define SHTC3_ADDRESS_READ (0x70 << 1) | 0x01
+
+if(HAL_I2C_IsDeviceReady(&hi2c2, SHTC3_ADDRESS_WRITE, 1, 100) == HAL_OK)
+	  HAL_UART_Transmit(&huart1, "OK", sizeof("OK"), 100);
+  else
+	  HAL_UART_Transmit(&huart1, "NOT_OK", sizeof("NOT_OK"), 100);
+
+  uint8_t regTemp[2];
+  regTemp[0] = 0x7C;
+  regTemp[1] = 0xA2;
+
+  //  uint8_t regHum[2];
+  //  regHum[0] = 0x5C;
+  //    regHum[1] = 0x24;
+  
+
+  uint8_t rxBuff[2];
+  uint16_t rawTemp;
+  int temp;
+  char printBuff[64];
+  char printTemp[64];
+  /* USER CODE END 2 */
+
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+  while (1)
+  {
+	  HAL_I2C_Master_Transmit(&hi2c2, SHTC3_ADDRESS_WRITE, regTemp, 2, 100);
+	  HAL_Delay(100);
+	  HAL_I2C_Master_Receive(&hi2c2, SHTC3_ADDRESS_READ, rxBuff, sizeof(rxBuff), 100);
+	  rawTemp = ((rxBuff[0] << 8) | rxBuff[1]);
+	  sprintf(printBuff, "\n\rRaw Temperature: %d\n", rawTemp);
+	  HAL_UART_Transmit(&huart1, (uint8_t*)printBuff, strlen(printBuff), 100);
+
+	  temp = (-45) + ((175 * rawTemp) / pow(2, 16));
+	  sprintf(printTemp, "\n\rTemperature = %d°C\n", temp);
+	  HAL_UART_Transmit(&huart1, (uint8_t*)printTemp, strlen(printTemp), 100);
+	  HAL_Delay(500);
+
+

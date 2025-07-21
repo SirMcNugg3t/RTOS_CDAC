@@ -1,0 +1,19 @@
+
+
+char msg[50];
+void printADC(int data){
+
+	    sprintf(msg, "ADC Value: %d\r\n", data);
+	    HAL_UART_Transmit(&huart1, msg, strlen(msg), 100);
+
+}
+.
+.
+.
+  
+	  	 HAL_ADC_Start(&hadc1);
+	  	 HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
+	  	 long int value = HAL_ADC_GetValue(&hadc1);
+
+
+__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, 65535);
